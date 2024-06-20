@@ -1,10 +1,14 @@
 package main
 
-import "github.com/gofor-little/env"
+import (
+	"github.com/DenisRukavitsa/voice-notes/server"
+	"github.com/gofor-little/env"
+)
 
 func main() {
   loadEnvFile()
-  createServer()
+  ginEngine := server.Create()
+  server.Run(ginEngine)
 }
 
 func loadEnvFile() {
