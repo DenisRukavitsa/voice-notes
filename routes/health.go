@@ -1,9 +1,9 @@
 package routes
 
 import (
-	"net/http"
+  "net/http"
 
-	"github.com/gin-gonic/gin"
+  "github.com/gin-gonic/gin"
 )
 
 func health(ginContext *gin.Context) {

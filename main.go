@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/DenisRukavitsa/voice-notes/server"
-	"github.com/gofor-little/env"
+  "github.com/DenisRukavitsa/voice-notes/server"
+  "github.com/gofor-little/env"
 )
 
 func main() {
