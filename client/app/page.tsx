@@ -1,5 +1,5 @@
-import CopyNoteButton from "./components/copy.note.button";
-import TakeNoteButton from "./components/take.note.button";
+import CopyNoteButton from "./components/copy-note-button/copy.note.button";
+import TakeNoteButton from "./components/take-note-button/take.note.button";
 
 export default function Home() {
   return (
