@@ -1,11 +1,13 @@
+"use client";
+
+import AudioTranscriber from "./components/audio-transcriber/audio.transcriber";
 import CopyNoteButton from "./components/copy-note-button/copy.note.button";
-import TakeNoteButton from "./components/take-note-button/take.note.button";
 
 export default function Home() {
   return (
     <main className="mx-auto p-4">
       <div className="flex">
-        <TakeNoteButton></TakeNoteButton>
+        <AudioTranscriber onTranscription={() => {}}></AudioTranscriber>
         <CopyNoteButton></CopyNoteButton>
       </div>
       <div>
