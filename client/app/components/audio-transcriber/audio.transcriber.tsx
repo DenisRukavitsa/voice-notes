@@ -2,13 +2,14 @@
 
 import AudioRecorder from "@/app/utils/audio-recorder/audio.recorder";
 import { useEffect, useState } from "react";
-import RecordNoteButton from "../take-note-button/record.note.button";
+import RecordNoteButton from "../record-note-button/record.note.button";
 
 interface Props {
   onTranscription: (transcription: string) => void;
+  onError: (error: string) => void;
 }
 
-const AudioTranscriber = ({ onTranscription }: Props) => {
+const AudioTranscriber = ({ onTranscription, onError }: Props) => {
   const [isAudioInputAvailable, setIsAudioInputAvailable] = useState(true);
   const [isTranscribing, setIsTranscribing] = useState(false);
   const [audioRecorder, setAudioRecorder] = useState<AudioRecorder | null>(
@@ -23,6 +24,7 @@ const AudioTranscriber = ({ onTranscription }: Props) => {
       // TODO: send file to the backend
     } catch (error) {
       console.error(error);
+      onError(`Error transcribing audio: ${error}`);
     } finally {
       setIsTranscribing(false);
     }
@@ -30,7 +32,7 @@ const AudioTranscriber = ({ onTranscription }: Props) => {
 
   useEffect(() => {
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      console.error("getUserMedia is not supported");
+      onError("Audio input is not available on this device");
       setIsAudioInputAvailable(false);
       return;
     }
@@ -41,24 +43,29 @@ const AudioTranscriber = ({ onTranscription }: Props) => {
   }, []);
 
   const handleRecordingStart = async () => {
-    if (!audioRecorder) return;
+    if (!audioRecorder) return false;
     try {
       await audioRecorder.start();
     } catch (error) {
       console.error(error);
+      onError(`Error recording audio: ${error}`);
+      return false;
     }
+
+    return true;
   };
 
-  const handleRecordingStop = async () => {
+  const handleRecordingStop = () => {
     if (!audioRecorder) return;
     audioRecorder.stop();
   };
 
   return (
     <RecordNoteButton
+      disabled={!isAudioInputAvailable}
       onRecordingStart={handleRecordingStart}
       onRecordingStop={handleRecordingStop}
-    ></RecordNoteButton>
+    />
   );
 };
 
