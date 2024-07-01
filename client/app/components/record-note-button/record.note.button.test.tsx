@@ -21,7 +21,7 @@ describe("TakeNoteButton", () => {
     expect(handleRecordingStop.mock.calls).toHaveLength(0);
   });
 
-  it("cannot click the button if it is disabled", () => {
+  it("cannot click the button if disabled prop is true", () => {
     const handleRecordingStart = jest.fn();
     const handleRecordingStop = jest.fn();
     render(
@@ -35,6 +35,25 @@ describe("TakeNoteButton", () => {
     const button = screen.getByRole("button");
     act(() => button.click());
     expect(button).toHaveAttribute("disabled");
+    expect(handleRecordingStart.mock.calls).toHaveLength(0);
+    expect(handleRecordingStop.mock.calls).toHaveLength(0);
+  });
+
+  it("cannot click the button if loading prop is true", () => {
+    const handleRecordingStart = jest.fn();
+    const handleRecordingStop = jest.fn();
+    render(
+      <RecordNoteButton
+        loading={true}
+        onRecordingStart={handleRecordingStart}
+        onRecordingStop={handleRecordingStop}
+      />
+    );
+
+    const button = screen.getByRole("button");
+    act(() => button.click());
+    expect(button).toHaveAttribute("disabled");
+    expect(button).toHaveTextContent("Transcribing...");
     expect(handleRecordingStart.mock.calls).toHaveLength(0);
     expect(handleRecordingStop.mock.calls).toHaveLength(0);
   });

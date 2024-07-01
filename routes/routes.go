@@ -6,6 +6,7 @@ import (
 )
 
 func Register(ginEngine *gin.Engine) {
+	ginEngine.Use(middleware.CORS())
   ginEngine.GET("/health", health)
   ginEngine.POST("/transcribe", middleware.SaveUploadedFile, transcribe)
 }

@@ -7,28 +7,15 @@ import RecordNoteButton from "../record-note-button/record.note.button";
 interface Props {
   onTranscription: (transcription: string) => void;
   onError: (error: string) => void;
+  clearError: () => void;
 }
 
-const AudioTranscriber = ({ onTranscription, onError }: Props) => {
+const AudioTranscriber = ({ onTranscription, onError, clearError }: Props) => {
   const [isAudioInputAvailable, setIsAudioInputAvailable] = useState(true);
   const [isTranscribing, setIsTranscribing] = useState(false);
   const [audioRecorder, setAudioRecorder] = useState<AudioRecorder | null>(
     null
   );
-
-  const handleAudioRecorderData = async (blob: Blob) => {
-    setIsTranscribing(true);
-    try {
-      const audioFile = new File([blob], "audio.ogg", { type: "audio/ogg" });
-      console.log(audioFile);
-      // TODO: send file to the backend
-    } catch (error) {
-      console.error(error);
-      onError(`Error transcribing audio: ${error}`);
-    } finally {
-      setIsTranscribing(false);
-    }
-  };
 
   useEffect(() => {
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
@@ -42,8 +29,42 @@ const AudioTranscriber = ({ onTranscription, onError }: Props) => {
     recorder.onData(handleAudioRecorderData);
   }, []);
 
+  const handleAudioRecorderData = async (blob: Blob) => {
+    setIsTranscribing(true);
+    try {
+      const transcription = await transcribeAudio(blob);
+      onTranscription(transcription);
+    } catch (error) {
+      console.error(error);
+      onError(`Error transcribing audio: ${error}`);
+    } finally {
+      setIsTranscribing(false);
+    }
+  };
+
+  const transcribeAudio = async (audioBlob: Blob) => {
+    const audioFile = new File([audioBlob], "audio.mp4", { type: "audio/mp4" });
+    const formData = new FormData();
+    formData.append("file", audioFile);
+
+    const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/transcribe`;
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      body: formData,
+    });
+    const json = await response.json();
+
+    if (!response.ok) {
+      throw new Error(json.error);
+    }
+
+    return json.transcription;
+  };
+
   const handleRecordingStart = async () => {
     if (!audioRecorder) return false;
+
+    clearError();
     try {
       await audioRecorder.start();
     } catch (error) {
@@ -63,6 +84,7 @@ const AudioTranscriber = ({ onTranscription, onError }: Props) => {
   return (
     <RecordNoteButton
       disabled={!isAudioInputAvailable}
+      loading={isTranscribing}
       onRecordingStart={handleRecordingStart}
       onRecordingStop={handleRecordingStop}
     />

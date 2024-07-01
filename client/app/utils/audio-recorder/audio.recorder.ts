@@ -30,7 +30,7 @@ class AudioRecorder {
 
   private createAudioBlob(): Blob {
     const audioBlob = new Blob(this.audioChunks, {
-      type: "audio/ogg; codecs=opus",
+      type: "audio/mp4; codecs=opus",
     });
     this.audioChunks = [];
     return audioBlob;
