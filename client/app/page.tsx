@@ -18,10 +18,13 @@ export default function Home() {
           onError={(error) => setError(error)}
           clearError={() => setError("")}
         />
-        <CopyNoteButton />
+        <CopyNoteButton noteText={transcription} />
       </div>
       {error && <ErrorMessage error={error} />}
-      <TranscriptionTextarea transcription={transcription} />
+      <TranscriptionTextarea
+        transcription={transcription}
+        onChange={(transcription) => setTranscription(transcription)}
+      />
     </main>
   );
 }
