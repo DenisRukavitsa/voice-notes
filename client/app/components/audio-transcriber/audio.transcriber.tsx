@@ -1,7 +1,7 @@
 "use client";
 
 import AudioRecorder from "@/app/utils/audio-recorder/audio.recorder";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import RecordNoteButton from "../record-note-button/record.note.button";
 
 interface Props {
@@ -17,6 +17,22 @@ const AudioTranscriber = ({ onTranscription, onError, clearError }: Props) => {
     null
   );
 
+  const handleAudioRecorderData = useCallback(
+    async (blob: Blob) => {
+      setIsTranscribing(true);
+      try {
+        const transcription = await transcribeAudio(blob);
+        onTranscription(transcription);
+      } catch (error) {
+        console.error(error);
+        onError(`Error transcribing audio: ${error}`);
+      } finally {
+        setIsTranscribing(false);
+      }
+    },
+    [onTranscription, onError]
+  );
+
   useEffect(() => {
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
       onError("Audio input is not available on this device");
@@ -27,20 +43,7 @@ const AudioTranscriber = ({ onTranscription, onError, clearError }: Props) => {
     const recorder = new AudioRecorder();
     setAudioRecorder(recorder);
     recorder.onData(handleAudioRecorderData);
-  }, []);
-
-  const handleAudioRecorderData = async (blob: Blob) => {
-    setIsTranscribing(true);
-    try {
-      const transcription = await transcribeAudio(blob);
-      onTranscription(transcription);
-    } catch (error) {
-      console.error(error);
-      onError(`Error transcribing audio: ${error}`);
-    } finally {
-      setIsTranscribing(false);
-    }
-  };
+  }, [onError, handleAudioRecorderData]);
 
   const transcribeAudio = async (audioBlob: Blob) => {
     const audioFile = new File([audioBlob], "audio.mp4", { type: "audio/mp4" });
