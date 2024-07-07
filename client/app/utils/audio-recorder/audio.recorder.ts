@@ -13,9 +13,12 @@ class AudioRecorder {
       audio: true,
     });
     this.mediaRecorder = new MediaRecorder(mediaStream);
-    this.mediaRecorder.ondataavailable = (event) =>
+    this.mediaRecorder.ondataavailable = (event) => {
       this.audioChunks.push(event.data);
-    this.mediaRecorder.onstop = () => this.notifyListeners();
+    };
+    this.mediaRecorder.onstop = () => {
+      this.notifyListeners();
+    };
     this.mediaRecorder.start();
   }
 
