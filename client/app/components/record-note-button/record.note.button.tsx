@@ -2,6 +2,7 @@
 
 import { MicrophoneIcon, StopIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
+import BaseButton from "../base/button/base.button";
 
 interface Props {
   disabled?: boolean;
@@ -31,26 +32,24 @@ const RecordNoteButton = ({
 
   if (isRecording) {
     return (
-      <button
+      <BaseButton
+        text={loading ? "Transcribing..." : "Stop recording"}
+        icon={<StopIcon className="size-6 mr-1" />}
         disabled={disabled || loading}
         onClick={handleStopButtonClick}
-        className="flex mr-3 px-4 py-1 text-base font-semibold rounded-full border text-red-400 border-red-200 hover:text-white hover:bg-red-400 hover:border-transparent focus:outline-none disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200"
-      >
-        <StopIcon className="size-5 mr-1" />
-        {loading ? <span>Transcribing...</span> : <span>Stop recording</span>}
-      </button>
+        className="mr-3 text-red-400 border-red-200 hover:bg-red-400"
+      />
     );
   }
 
   return (
-    <button
+    <BaseButton
+      text={loading ? "Transcribing..." : "Record a note"}
+      icon={<MicrophoneIcon className="size-5 mr-1" />}
       disabled={disabled || loading}
       onClick={handleRecordButtonClick}
-      className="flex mr-3 px-4 py-1 text-base font-semibold rounded-full border text-teal-600 border-teal-300 hover:text-white hover:bg-teal-600 hover:border-transparent focus:outline-none disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200"
-    >
-      <MicrophoneIcon className="size-5 mr-1" />
-      {loading ? <span>Transcribing...</span> : <span>Record a note</span>}
-    </button>
+      className="mr-3 text-teal-600 border-teal-300 hover:bg-teal-600"
+    />
   );
 };
 

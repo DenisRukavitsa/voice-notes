@@ -5,6 +5,7 @@ import {
   DocumentDuplicateIcon,
 } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
+import BaseButton from "../base/button/base.button";
 
 export default function CopyNoteButton({ noteText }: { noteText: string }) {
   const [isCopied, setIsCopied] = useState(false);
@@ -24,18 +25,19 @@ export default function CopyNoteButton({ noteText }: { noteText: string }) {
     setIsCopied(true);
   };
 
+  const icon = isCopied ? (
+    <CheckCircleIcon className="size-6 mr-1" />
+  ) : (
+    <DocumentDuplicateIcon className="size-5 mr-1" />
+  );
+
   return (
-    <button
-      onClick={handleNoteCopy}
+    <BaseButton
+      text={isCopied ? "Copied!" : "Copy note"}
+      icon={icon}
       disabled={!noteText}
-      className="flex px-4 py-1 text-base text-teal-600 font-semibold rounded-full border border-teal-300 hover:text-white hover:bg-teal-600 hover:border-transparent focus:outline-none disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200"
-    >
-      {isCopied ? (
-        <CheckCircleIcon className="size-6 mr-1" />
-      ) : (
-        <DocumentDuplicateIcon className="size-5 mr-1" />
-      )}
-      {isCopied ? <span>Copied!</span> : <span>Copy note</span>}
-    </button>
+      onClick={handleNoteCopy}
+      className="text-teal-600 border-teal-300 hover:bg-teal-600"
+    />
   );
 }
