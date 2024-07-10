@@ -1,6 +1,10 @@
 "use client";
 
-import { MicrophoneIcon, StopIcon } from "@heroicons/react/24/outline";
+import {
+  ArrowPathIcon,
+  MicrophoneIcon,
+  StopIcon,
+} from "@heroicons/react/24/outline";
 import { useState } from "react";
 import BaseButton from "../base/button/base.button";
 
@@ -42,10 +46,15 @@ const RecordNoteButton = ({
     );
   }
 
+  const icon = loading ? (
+    <ArrowPathIcon className="size-6 mr-1 animate-spin" />
+  ) : (
+    <MicrophoneIcon className="size-5 mr-1" />
+  );
   return (
     <BaseButton
       text={loading ? "Transcribing..." : "Record a note"}
-      icon={<MicrophoneIcon className="size-5 mr-1" />}
+      icon={icon}
       disabled={disabled || loading}
       onClick={handleRecordButtonClick}
       className="mr-3 text-teal-600 border-teal-300 hover:bg-teal-600"
