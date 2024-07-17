@@ -24,5 +24,5 @@ func register(context *gin.Context) {
 		return
 	}
 
-	context.JSON(http.StatusOK, gin.H{"userID": user.ID})
+	context.JSON(http.StatusOK, gin.H{"userId": user.ID})
 }

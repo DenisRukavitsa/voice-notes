@@ -3,8 +3,8 @@ package models
 import (
 	"context"
 
-	"github.com/DenisRukavitsa/voice-notes/database"
 	"github.com/DenisRukavitsa/voice-notes/auth"
+	"github.com/DenisRukavitsa/voice-notes/database"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
