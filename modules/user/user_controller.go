@@ -1,15 +1,14 @@
-package routes
+package user
 
 import (
 	"log"
 	"net/http"
 
-	"github.com/DenisRukavitsa/voice-notes/models"
 	"github.com/gin-gonic/gin"
 )
 
-func register(context *gin.Context) {
-	var user models.User
+func Register(context *gin.Context) {
+	var user UserModel
 	err := context.BindJSON(&user)
 	if err != nil {
 		log.Println("error binding user data", err)
@@ -17,7 +16,7 @@ func register(context *gin.Context) {
 		return
 	}
 
-	err = user.Save()
+	err = save(&user)
 	if err != nil {
 		log.Println("error saving user", err)
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "error saving user"})

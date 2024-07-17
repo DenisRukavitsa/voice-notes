@@ -1,6 +1,6 @@
 // +build !mock
 
-package transcriber
+package transcription
 
 import (
 	"context"
@@ -10,7 +10,7 @@ import (
 	"github.com/sashabaranov/go-openai"
 )
 
-func Transcribe(filePath string) (string, error) {
+func transcribeAudioFile(filePath string) (string, error) {
   log.Println("transcribing audio")
   client := openai.NewClient(os.Getenv("OPENAI_AUTH_TOKEN"))
   context := context.Background()

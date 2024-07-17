@@ -1,20 +1,16 @@
-package models
+package user
 
 import (
 	"context"
+	"log"
 
-	"github.com/DenisRukavitsa/voice-notes/auth"
 	"github.com/DenisRukavitsa/voice-notes/database"
+	"github.com/DenisRukavitsa/voice-notes/modules/auth"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-type User struct {
-	ID       primitive.ObjectID
-	Email    string `binding:"required"`
-	Password string `binding:"required"`
-}
-
-func (user *User) Save() error {
+func save(user *UserModel) error {
+	log.Println("saving user")
 	passwordHash, err := auth.HashPassword(user.Password)
 	if err != nil {
 		return err
