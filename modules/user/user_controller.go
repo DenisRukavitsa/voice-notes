@@ -16,12 +16,12 @@ func Register(context *gin.Context) {
 		return
 	}
 
-	err = save(&user)
+	userId, err := save(user)
 	if err != nil {
 		log.Println("error saving user", err)
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "error saving user"})
 		return
 	}
 
-	context.JSON(http.StatusOK, gin.H{"userId": user.ID})
+	context.JSON(http.StatusOK, gin.H{"userId": userId})
 }

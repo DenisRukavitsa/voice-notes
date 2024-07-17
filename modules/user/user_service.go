@@ -9,20 +9,19 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func save(user *UserModel) error {
-	log.Println("saving user")
+func save(user UserModel) (primitive.ObjectID, error) {
+	log.Println("saving user", user)
 	passwordHash, err := auth.HashPassword(user.Password)
 	if err != nil {
-		return err
+		return primitive.NilObjectID, err
 	}
 	user.Password = passwordHash
 	
 	collection := database.Database.Collection("users")
 	result, err := collection.InsertOne(context.TODO(), user)
 	if err != nil {
-		return err
+		return primitive.NilObjectID, err
 	}
 
-	user.ID = result.InsertedID.(primitive.ObjectID)
-	return nil
+	return result.InsertedID.(primitive.ObjectID), nil
 }
