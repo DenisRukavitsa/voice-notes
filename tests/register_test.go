@@ -4,11 +4,13 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"log"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
 	"github.com/DenisRukavitsa/voice-notes/database"
+	"github.com/DenisRukavitsa/voice-notes/modules/user"
 	"github.com/DenisRukavitsa/voice-notes/server"
 	"github.com/gofor-little/env"
 	"github.com/stretchr/testify/assert"
@@ -46,6 +48,7 @@ func (suite *RegisterRouteTestSuite) TestSuccess() {
 	var response map[string]string
 	err := json.Unmarshal(recorder.Body.Bytes(), &response)
 
+	log.Println(response)
 	assert.Nil(suite.T(), err)
 	assert.Equal(suite.T(), http.StatusOK, recorder.Code)
 	assert.NotEmpty(suite.T(), response["userId"])
@@ -74,6 +77,34 @@ func (suite *RegisterRouteTestSuite) TestNoPassword() {
 	assert.Nil(suite.T(), err)
 	assert.Equal(suite.T(), http.StatusBadRequest, recorder.Code)
 	assert.Equal(suite.T(), "invalid user details", response["error"])
+}
+
+func (suite *RegisterRouteTestSuite) TestExistingEmail() {
+	collection := suite.databaseClient.Database("voice-notes").Collection("users")
+  user := user.UserModel{
+		Email: "test@test.com",
+		Password: "secret",
+	}
+	insertResult, _ := collection.InsertOne(context.TODO(), user)
+	userObjectId := insertResult.InsertedID.(primitive.ObjectID)
+	
+	server := server.Create()
+	recorder := httptest.NewRecorder()
+
+	body := []byte(`{"email":"test@test.com","password":"secret"}`)
+	request, _ := http.NewRequest(http.MethodPost, "/register", bytes.NewBuffer(body))
+	request.Header.Set("Content-Type", "application/json")
+	server.ServeHTTP(recorder, request)
+
+	var response map[string]string
+	err := json.Unmarshal(recorder.Body.Bytes(), &response)
+
+	assert.Nil(suite.T(), err)
+	assert.Equal(suite.T(), http.StatusBadRequest, recorder.Code)
+	assert.Equal(suite.T(), "user email already registered", response["error"])
+
+	filter := bson.D{{Key: "_id", Value: userObjectId}}
+	collection.DeleteOne(context.TODO(), filter)
 }
 
 func TestRegisterRouteTestSuite(t *testing.T) {

@@ -16,8 +16,13 @@ func Connect() *mongo.Client {
 	if err != nil {
 		panic(err)
 	}
-
 	Database = client.Database("voice-notes")
+
+	err = buildDatabaseSchema()
+	if err != nil {
+		panic(err)
+	}
+
 	return client
 }
 

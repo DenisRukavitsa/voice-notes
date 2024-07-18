@@ -16,6 +16,13 @@ func Register(context *gin.Context) {
 		return
 	}
 
+	_, err = findUserByEmail(user.Email)
+	if err == nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": "user email already registered"})
+		return
+	}
+
+
 	userId, err := save(user)
 	if err != nil {
 		log.Println("error saving user", err)
