@@ -13,4 +13,5 @@ func Register(ginEngine *gin.Engine) {
   ginEngine.GET("/health", health)
   ginEngine.POST("/transcribe", file.SaveUploadedFile, transcription.Transcribe)
 	ginEngine.POST("/register", user.Register)
+	ginEngine.POST("/login", user.Login)
 }

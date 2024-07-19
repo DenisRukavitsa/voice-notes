@@ -10,7 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func save(user UserModel) (primitive.ObjectID, error) {
+func save(user UserDto) (primitive.ObjectID, error) {
 	log.Println("saving user")
 	passwordHash, err := auth.HashPassword(user.Password)
 	if err != nil {
@@ -36,4 +36,18 @@ func findUserByEmail(email string) (UserModel, error) {
 		return UserModel{}, err
 	}
 	return user, nil
+}
+
+func checkUserCredentials(user UserDto) (string, error) {
+	storedUser, err := findUserByEmail(user.Email)
+	if err != nil {
+		return "", err
+	}
+
+	isPasswordValid := auth.CheckPasswordHash(user.Password, storedUser.Password)
+	if !isPasswordValid {
+		return "", nil
+	}
+
+	return storedUser.Id, nil
 }

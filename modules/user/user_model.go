@@ -1,6 +1,7 @@
 package user
 
 type UserModel struct {
-	Email    string `binding:"required"`
-	Password string `binding:"required"`
+	Id 			 string `bson:"_id"`
+	Email    string
+	Password string
 }
